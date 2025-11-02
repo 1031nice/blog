@@ -8,7 +8,7 @@ export default function Header() {
           <Link href="/" className="text-xl font-bold hover:text-gray-600 dark:hover:text-gray-400 transition-colors">
             My Blog
           </Link>
-          <nav className="flex gap-6">
+          <nav className="flex gap-6 items-center">
             <Link 
               href="/" 
               className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
@@ -26,6 +26,12 @@ export default function Header() {
               className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
             >
               About
+            </Link>
+            <Link 
+              href="/posts/new" 
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+            >
+              글쓰기
             </Link>
           </nav>
         </div>
