@@ -2,6 +2,8 @@ import { getAllPosts, getPostsByTag, getAllTags } from '@/lib/posts'
 import PostCard from '@/components/PostCard'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 interface PostsPageProps {
   searchParams: {
     tag?: string

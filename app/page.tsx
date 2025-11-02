@@ -2,6 +2,8 @@ import { getAllPosts } from '@/lib/posts'
 import PostCard from '@/components/PostCard'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 export default function Home() {
   const posts = getAllPosts().slice(0, 3) // 최신 3개만 표시
 

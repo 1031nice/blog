@@ -1,18 +1,13 @@
-import { getPostById, getAllPosts } from '@/lib/posts'
+import { getPostById } from '@/lib/posts'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+
+export const dynamic = 'force-dynamic'
 
 interface PostPageProps {
   params: {
     id: string
   }
-}
-
-export function generateStaticParams() {
-  const posts = getAllPosts()
-  return posts.map((post) => ({
-    id: post.id,
-  }))
 }
 
 export default function PostPage({ params }: PostPageProps) {
@@ -34,10 +29,12 @@ export default function PostPage({ params }: PostPageProps) {
       <header className="mb-8">
         <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
         <p className="text-gray-600 dark:text-gray-400">
-          {new Date(post.date).toLocaleDateString('ko-KR', {
+          {new Date(post.date).toLocaleString('ko-KR', {
             year: 'numeric',
             month: 'long',
-            day: 'numeric'
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
           })}
         </p>
         {post.tags && post.tags.length > 0 && (

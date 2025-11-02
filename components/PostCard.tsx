@@ -14,10 +14,12 @@ export default function PostCard({ post }: PostCardProps) {
         </h2>
       </Link>
       <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
-        {new Date(post.date).toLocaleDateString('ko-KR', {
+        {new Date(post.date).toLocaleString('ko-KR', {
           year: 'numeric',
           month: 'long',
-          day: 'numeric'
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
         })}
       </p>
       <p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-2">
