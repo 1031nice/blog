@@ -46,3 +46,7 @@ blog/
 └── package.json
 ```
 
+## 커밋 가이드
+
+커밋 메시지 작성 규칙은 [COMMIT_GUIDE.md](./COMMIT_GUIDE.md)를 참고하세요.
+
