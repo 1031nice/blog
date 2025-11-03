@@ -1,19 +1,38 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { Post } from '@/lib/posts'
 
-export default function PostForm() {
+interface PostFormProps {
+  postId?: string
+  initialData?: Post
+}
+
+export default function PostForm({ postId, initialData }: PostFormProps) {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const isEditMode = !!postId
   
   const [formData, setFormData] = useState({
-    title: '',
-    excerpt: '',
-    content: '',
-    tags: ''
+    title: initialData?.title || '',
+    excerpt: initialData?.excerpt || '',
+    content: initialData?.content || '',
+    tags: initialData?.tags?.join(', ') || ''
   })
+
+  // initialData가 변경되면 폼 데이터 업데이트
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        title: initialData.title || '',
+        excerpt: initialData.excerpt || '',
+        content: initialData.content || '',
+        tags: initialData.tags?.join(', ') || ''
+      })
+    }
+  }, [initialData])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -26,8 +45,11 @@ export default function PostForm() {
         .map(tag => tag.trim())
         .filter(tag => tag.length > 0)
 
-      const response = await fetch('/api/posts', {
-        method: 'POST',
+      const url = isEditMode ? `/api/posts/${postId}` : '/api/posts'
+      const method = isEditMode ? 'PUT' : 'POST'
+
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -40,12 +62,12 @@ export default function PostForm() {
       })
 
       if (!response.ok) {
-        throw new Error('포스트 저장에 실패했습니다.')
+        throw new Error(isEditMode ? '포스트 수정에 실패했습니다.' : '포스트 저장에 실패했습니다.')
       }
 
       const data = await response.json()
       // 완전 새로고침하여 최신 데이터 로드
-      router.push(`/posts/${data.id}`)
+      router.push(`/posts/${isEditMode ? postId : data.id}`)
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.')
@@ -143,7 +165,7 @@ export default function PostForm() {
           disabled={isSubmitting}
           className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
         >
-          {isSubmitting ? '저장 중...' : '포스트 저장'}
+          {isSubmitting ? (isEditMode ? '수정 중...' : '저장 중...') : (isEditMode ? '포스트 수정' : '포스트 저장')}
         </button>
         <button
           type="button"

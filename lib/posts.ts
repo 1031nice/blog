@@ -179,3 +179,23 @@ export function addPost(post: Post): void {
   writeFileSync(filePath, markdown, 'utf-8')
 }
 
+export function updatePost(id: string, updatedPost: Partial<Post>): void {
+  const existingPost = getPostById(id)
+  if (!existingPost) {
+    throw new Error(`Post with id ${id} not found`)
+  }
+
+  // 기존 포스트의 정보를 유지하면서 업데이트된 필드만 변경
+  const post: Post = {
+    ...existingPost,
+    ...updatedPost,
+    id: existingPost.id, // ID는 변경하지 않음
+    date: existingPost.date, // 날짜는 변경하지 않음 (생성일 유지)
+  }
+
+  const fileName = `${id}.md`
+  const filePath = join(POSTS_DIR, fileName)
+  const markdown = postToMarkdown(post)
+  writeFileSync(filePath, markdown, 'utf-8')
+}
+

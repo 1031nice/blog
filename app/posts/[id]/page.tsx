@@ -27,7 +27,15 @@ export default function PostPage({ params }: PostPageProps) {
       </Link>
       
       <header className="mb-8">
-        <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
+        <div className="flex items-start justify-between mb-4">
+          <h1 className="text-4xl font-bold">{post.title}</h1>
+          <Link
+            href={`/posts/${post.id}/edit`}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+          >
+            수정
+          </Link>
+        </div>
         <p className="text-gray-600 dark:text-gray-400">
           {new Date(post.date).toLocaleString('ko-KR', {
             year: 'numeric',
