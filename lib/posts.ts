@@ -8,6 +8,7 @@ export interface Post {
   excerpt: string
   content: string
   tags?: string[]
+  updatedAt?: string
 }
 
 const POSTS_DIR = join(process.cwd(), 'content', 'posts')
@@ -89,7 +90,8 @@ function parseMarkdownFile(filePath: string): Post | null {
       date: frontmatter.date || '',
       excerpt: frontmatter.excerpt || '',
       content: body.trim(),
-      tags: Array.isArray(frontmatter.tags) ? frontmatter.tags : (frontmatter.tags ? [frontmatter.tags] : [])
+      tags: Array.isArray(frontmatter.tags) ? frontmatter.tags : (frontmatter.tags ? [frontmatter.tags] : []),
+      updatedAt: frontmatter.updatedAt
     }
   } catch (error) {
     console.error(`파일 파싱 오류 ${filePath}:`, error)
@@ -102,13 +104,17 @@ function postToMarkdown(post: Post): string {
   const tagsYaml = post.tags && post.tags.length > 0
     ? `tags:\n${post.tags.map(tag => `  - "${tag}"`).join('\n')}`
     : 'tags: []'
+  
+  const updatedAtYaml = post.updatedAt
+    ? `updatedAt: "${post.updatedAt}"`
+    : ''
 
   return `---
 id: "${post.id}"
 title: "${post.title}"
 date: "${post.date}"
 excerpt: "${post.excerpt}"
-${tagsYaml}
+${tagsYaml}${updatedAtYaml ? `\n${updatedAtYaml}` : ''}
 ---
 
 ${post.content}`
@@ -191,6 +197,7 @@ export function updatePost(id: string, updatedPost: Partial<Post>): void {
     ...updatedPost,
     id: existingPost.id, // ID는 변경하지 않음
     date: existingPost.date, // 날짜는 변경하지 않음 (생성일 유지)
+    updatedAt: new Date().toISOString(), // 수정 시간 추가
   }
 
   const fileName = `${id}.md`

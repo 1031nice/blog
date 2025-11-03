@@ -36,15 +36,28 @@ export default function PostPage({ params }: PostPageProps) {
             수정
           </Link>
         </div>
-        <p className="text-gray-600 dark:text-gray-400">
-          {new Date(post.date).toLocaleString('ko-KR', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          })}
-        </p>
+        <div className="text-gray-600 dark:text-gray-400 space-y-1">
+          <p>
+            작성일: {new Date(post.date).toLocaleString('ko-KR', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
+          </p>
+          {post.updatedAt && (
+            <p className="text-sm">
+              수정일: {new Date(post.updatedAt).toLocaleString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
+            </p>
+          )}
+        </div>
         {post.tags && post.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-4">
             {post.tags.map((tag) => (
