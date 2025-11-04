@@ -10,10 +10,10 @@ interface PostsPageProps {
   }
 }
 
-export default function PostsPage({ searchParams }: PostsPageProps) {
+export default async function PostsPage({ searchParams }: PostsPageProps) {
   const selectedTag = searchParams.tag
-  const posts = selectedTag ? getPostsByTag(selectedTag) : getAllPosts()
-  const allTags = getAllTags()
+  const posts = selectedTag ? await getPostsByTag(selectedTag) : await getAllPosts()
+  const allTags = await getAllTags()
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

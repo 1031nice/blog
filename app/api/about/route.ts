@@ -1,22 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { readFileSync, writeFileSync, existsSync } from 'fs'
-import { join } from 'path'
+import { supabase } from '@/lib/supabase'
 
-const ABOUT_FILE = join(process.cwd(), 'content', 'about.txt')
+const DEFAULT_CONTENT = `안녕하세요! 이 블로그에 오신 것을 환영합니다.
+여기서는 개발, 기술, 그리고 일상의 생각들을 공유합니다.
+Next.js와 TypeScript로 만든 개인 블로그입니다.`
 
 // GET: About 내용 읽기
 export async function GET() {
   try {
-    if (!existsSync(ABOUT_FILE)) {
-      // 파일이 없으면 기본 내용 반환
-      const defaultContent = `안녕하세요! 이 블로그에 오신 것을 환영합니다.
-여기서는 개발, 기술, 그리고 일상의 생각들을 공유합니다.
-Next.js와 TypeScript로 만든 개인 블로그입니다.`
-      return NextResponse.json({ content: defaultContent })
+    const { data, error } = await supabase
+      .from('about')
+      .select('content')
+      .eq('id', 'about')
+      .single()
+
+    if (error) {
+      // 레코드가 없으면 기본 내용 반환
+      if (error.code === 'PGRST116') {
+        return NextResponse.json({ content: DEFAULT_CONTENT })
+      }
+      console.error('About 내용 읽기 오류:', error)
+      return NextResponse.json(
+        { error: '서버 오류가 발생했습니다.' },
+        { status: 500 }
+      )
     }
 
-    const content = readFileSync(ABOUT_FILE, 'utf-8')
-    return NextResponse.json({ content })
+    return NextResponse.json({ content: data?.content || DEFAULT_CONTENT })
   } catch (error) {
     console.error('About 내용 읽기 오류:', error)
     return NextResponse.json(
@@ -39,7 +49,22 @@ export async function PUT(request: NextRequest) {
       )
     }
 
-    writeFileSync(ABOUT_FILE, content.trim(), 'utf-8')
+    // upsert를 사용하여 레코드가 없으면 생성, 있으면 업데이트
+    const { error } = await supabase
+      .from('about')
+      .upsert({
+        id: 'about',
+        content: content.trim(),
+        updated_at: new Date().toISOString(),
+      })
+
+    if (error) {
+      console.error('About 내용 업데이트 오류:', error)
+      return NextResponse.json(
+        { error: '서버 오류가 발생했습니다.' },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json(
       { message: 'About 내용이 성공적으로 업데이트되었습니다.' },

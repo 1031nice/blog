@@ -1,5 +1,4 @@
-import { readFileSync, writeFileSync, readdirSync, existsSync } from 'fs'
-import { join } from 'path'
+import { supabase } from './supabase'
 
 export interface Post {
   id: string
@@ -11,201 +10,166 @@ export interface Post {
   updatedAt?: string
 }
 
-const POSTS_DIR = join(process.cwd(), 'content', 'posts')
-
-// Frontmatter 파싱 함수
-function parseFrontmatter(content: string): { frontmatter: Record<string, any>, body: string } {
-  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/
-  const match = content.match(frontmatterRegex)
-
-  if (!match) {
-    throw new Error('Invalid frontmatter format')
-  }
-
-  const frontmatterText = match[1]
-  const body = match[2]
-
-  // YAML 파싱 (간단한 버전)
-  const frontmatter: Record<string, any> = {}
-  const lines = frontmatterText.split('\n')
-
-  let currentKey = ''
-  let currentValue: any = null
-  let inArray = false
-  let arrayKey = ''
-
-  for (const line of lines) {
-    const trimmed = line.trim()
-    if (!trimmed) continue
-
-    // 배열 항목 체크
-    if (trimmed.startsWith('- ')) {
-      const item = trimmed.slice(2).replace(/^"|"$/g, '')
-      if (inArray && arrayKey) {
-        if (!Array.isArray(frontmatter[arrayKey])) {
-          frontmatter[arrayKey] = []
-        }
-        frontmatter[arrayKey].push(item)
-      }
-      continue
-    }
-
-    // 키-값 쌍
-    const colonIndex = trimmed.indexOf(':')
-    if (colonIndex > 0) {
-      // 이전 배열 종료
-      if (inArray && arrayKey) {
-        inArray = false
-        arrayKey = ''
-      }
-
-      const key = trimmed.slice(0, colonIndex).trim()
-      const value = trimmed.slice(colonIndex + 1).trim().replace(/^"|"$/g, '')
-
-      if (value === '' || value === '[]') {
-        // 배열 시작
-        inArray = true
-        arrayKey = key
-        frontmatter[key] = []
-      } else {
-        frontmatter[key] = value
-        currentKey = key
-        currentValue = value
-      }
-    }
-  }
-
-  return { frontmatter, body }
+// 데이터베이스 스키마 타입
+interface DatabasePost {
+  id: string
+  title: string
+  date: string
+  excerpt: string | null
+  content: string
+  tags: string[] | null
+  updated_at: string | null
 }
 
-// 마크다운 파일을 Post로 변환
-function parseMarkdownFile(filePath: string): Post | null {
+// 데이터베이스 결과를 Post 인터페이스로 변환
+function dbPostToPost(dbPost: DatabasePost): Post {
+  return {
+    id: dbPost.id,
+    title: dbPost.title,
+    date: dbPost.date,
+    excerpt: dbPost.excerpt || undefined,
+    content: dbPost.content,
+    tags: dbPost.tags || [],
+    updatedAt: dbPost.updated_at || undefined,
+  }
+}
+
+export async function getAllPosts(): Promise<Post[]> {
   try {
-    const content = readFileSync(filePath, 'utf-8')
-    const { frontmatter, body } = parseFrontmatter(content)
+    const { data, error } = await supabase
+      .from('posts')
+      .select('*')
+      .order('date', { ascending: false })
 
-    return {
-      id: frontmatter.id || '',
-      title: frontmatter.title || '',
-      date: frontmatter.date || '',
-      excerpt: frontmatter.excerpt || undefined,
-      content: body.trim(),
-      tags: Array.isArray(frontmatter.tags) ? frontmatter.tags : (frontmatter.tags ? [frontmatter.tags] : []),
-      updatedAt: frontmatter.updatedAt
-    }
-  } catch (error) {
-    console.error(`파일 파싱 오류 ${filePath}:`, error)
-    return null
-  }
-}
-
-// Post를 마크다운 파일 형식으로 변환
-function postToMarkdown(post: Post): string {
-  const tagsYaml = post.tags && post.tags.length > 0
-    ? `tags:\n${post.tags.map(tag => `  - "${tag}"`).join('\n')}`
-    : 'tags: []'
-  
-  const updatedAtYaml = post.updatedAt
-    ? `updatedAt: "${post.updatedAt}"`
-    : ''
-  
-  const excerptYaml = post.excerpt
-    ? `excerpt: "${post.excerpt}"`
-    : ''
-
-  return `---
-id: "${post.id}"
-title: "${post.title}"
-date: "${post.date}"
-${excerptYaml ? `${excerptYaml}\n` : ''}${tagsYaml}${updatedAtYaml ? `\n${updatedAtYaml}` : ''}
----
-
-${post.content}`
-}
-
-function readPosts(): Post[] {
-  try {
-    if (!existsSync(POSTS_DIR)) {
+    if (error) {
+      console.error('포스트 읽기 오류:', error)
       return []
     }
 
-    const files = readdirSync(POSTS_DIR)
-    const posts: Post[] = []
-
-    for (const file of files) {
-      if (file.endsWith('.md')) {
-        const filePath = join(POSTS_DIR, file)
-        const post = parseMarkdownFile(filePath)
-        if (post) {
-          posts.push(post)
-        }
-      }
-    }
-
-    return posts
+    return (data || []).map(dbPostToPost)
   } catch (error) {
     console.error('포스트 읽기 오류:', error)
     return []
   }
 }
 
-export function getAllPosts(): Post[] {
-  const posts = readPosts()
-  return posts.sort((a, b) => {
-    // datetime으로 정렬 (ISO 8601 형식 또는 YYYY-MM-DD 형식 모두 처리)
-    const aDate = new Date(a.date).getTime()
-    const bDate = new Date(b.date).getTime()
-    return bDate - aDate // 최신순 (내림차순)
-  })
-}
+export async function getPostById(id: string): Promise<Post | undefined> {
+  try {
+    const { data, error } = await supabase
+      .from('posts')
+      .select('*')
+      .eq('id', id)
+      .single()
 
-export function getPostById(id: string): Post | undefined {
-  const posts = getAllPosts()
-  return posts.find(post => post.id === id)
-}
-
-export function getPostsByTag(tag: string): Post[] {
-  return getAllPosts().filter(post => 
-    post.tags && post.tags.some(t => t.toLowerCase() === tag.toLowerCase())
-  )
-}
-
-export function getAllTags(): string[] {
-  const posts = getAllPosts()
-  const tagSet = new Set<string>()
-  posts.forEach(post => {
-    if (post.tags) {
-      post.tags.forEach(tag => tagSet.add(tag))
+    if (error) {
+      console.error('포스트 읽기 오류:', error)
+      return undefined
     }
-  })
-  return Array.from(tagSet).sort()
-}
 
-export function addPost(post: Post): void {
-  const fileName = `${post.id}.md`
-  const filePath = join(POSTS_DIR, fileName)
-  const markdown = postToMarkdown(post)
-  writeFileSync(filePath, markdown, 'utf-8')
-}
-
-export function updatePost(id: string, updatedPost: Partial<Post>): void {
-  const existingPost = getPostById(id)
-  if (!existingPost) {
-    throw new Error(`Post with id ${id} not found`)
+    return data ? dbPostToPost(data) : undefined
+  } catch (error) {
+    console.error('포스트 읽기 오류:', error)
+    return undefined
   }
-
-  // 기존 포스트의 정보를 유지하면서 업데이트된 필드만 변경
-  const post: Post = {
-    ...existingPost,
-    ...updatedPost,
-    id: existingPost.id, // ID는 변경하지 않음
-    date: existingPost.date, // 날짜는 변경하지 않음 (생성일 유지)
-    updatedAt: new Date().toISOString(), // 수정 시간 추가
-  }
-
-  const fileName = `${id}.md`
-  const filePath = join(POSTS_DIR, fileName)
-  const markdown = postToMarkdown(post)
-  writeFileSync(filePath, markdown, 'utf-8')
 }
 
+export async function getPostsByTag(tag: string): Promise<Post[]> {
+  try {
+    const { data, error } = await supabase
+      .from('posts')
+      .select('*')
+      .contains('tags', [tag])
+      .order('date', { ascending: false })
+
+    if (error) {
+      console.error('포스트 읽기 오류:', error)
+      return []
+    }
+
+    // 대소문자 구분 없이 필터링 (Supabase는 대소문자 구분)
+    const posts = (data || []).map(dbPostToPost)
+    return posts.filter(post =>
+      post.tags && post.tags.some(t => t.toLowerCase() === tag.toLowerCase())
+    )
+  } catch (error) {
+    console.error('포스트 읽기 오류:', error)
+    return []
+  }
+}
+
+export async function getAllTags(): Promise<string[]> {
+  try {
+    const { data, error } = await supabase
+      .from('posts')
+      .select('tags')
+
+    if (error) {
+      console.error('태그 읽기 오류:', error)
+      return []
+    }
+
+    const tagSet = new Set<string>()
+    ;(data || []).forEach((post: { tags: string[] | null }) => {
+      if (post.tags) {
+        post.tags.forEach(tag => tagSet.add(tag))
+      }
+    })
+
+    return Array.from(tagSet).sort()
+  } catch (error) {
+    console.error('태그 읽기 오류:', error)
+    return []
+  }
+}
+
+export async function addPost(post: Post): Promise<void> {
+  try {
+    const { error } = await supabase
+      .from('posts')
+      .insert({
+        id: post.id,
+        title: post.title,
+        date: post.date,
+        excerpt: post.excerpt || null,
+        content: post.content,
+        tags: post.tags || [],
+      })
+
+    if (error) {
+      console.error('포스트 저장 오류:', error)
+      throw new Error(`Failed to save post: ${error.message}`)
+    }
+  } catch (error) {
+    console.error('포스트 저장 오류:', error)
+    throw error
+  }
+}
+
+export async function updatePost(id: string, updatedPost: Partial<Post>): Promise<void> {
+  try {
+    // 기존 포스트 확인
+    const existingPost = await getPostById(id)
+    if (!existingPost) {
+      throw new Error(`Post with id ${id} not found`)
+    }
+
+    const { error } = await supabase
+      .from('posts')
+      .update({
+        title: updatedPost.title ?? existingPost.title,
+        excerpt: updatedPost.excerpt !== undefined ? (updatedPost.excerpt || null) : existingPost.excerpt || null,
+        content: updatedPost.content ?? existingPost.content,
+        tags: updatedPost.tags || existingPost.tags || [],
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+
+    if (error) {
+      console.error('포스트 수정 오류:', error)
+      throw new Error(`Failed to update post: ${error.message}`)
+    }
+  } catch (error) {
+    console.error('포스트 수정 오류:', error)
+    throw error
+  }
+}

@@ -11,7 +11,7 @@ export async function PUT(
     const { title, excerpt, content, tags } = body
 
     // 포스트 존재 여부 확인
-    const existingPost = getPostById(id)
+    const existingPost = await getPostById(id)
     if (!existingPost) {
       return NextResponse.json(
         { error: '포스트를 찾을 수 없습니다.' },
@@ -28,7 +28,7 @@ export async function PUT(
     }
 
     // 포스트 업데이트
-    updatePost(id, {
+    await updatePost(id, {
       title: title.trim(),
       excerpt: excerpt ? excerpt.trim() : undefined,
       content: content.trim(),

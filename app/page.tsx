@@ -4,8 +4,8 @@ import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
-export default function Home() {
-  const posts = getAllPosts().slice(0, 3) // 최신 3개만 표시
+export default async function Home() {
+  const posts = (await getAllPosts()).slice(0, 3) // 최신 3개만 표시
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

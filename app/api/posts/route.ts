@@ -24,8 +24,8 @@ export async function POST(request: NextRequest) {
       tags: tags && Array.isArray(tags) ? tags : [],
     }
 
-    // 파일 시스템에 저장
-    addPost(newPost)
+    // Supabase에 저장
+    await addPost(newPost)
 
     return NextResponse.json(
       { id: newPost.id, message: '포스트가 성공적으로 저장되었습니다.' },

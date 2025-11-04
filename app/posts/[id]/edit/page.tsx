@@ -10,8 +10,8 @@ interface EditPostPageProps {
   }
 }
 
-export default function EditPostPage({ params }: EditPostPageProps) {
-  const post = getPostById(params.id)
+export default async function EditPostPage({ params }: EditPostPageProps) {
+  const post = await getPostById(params.id)
 
   if (!post) {
     notFound()
