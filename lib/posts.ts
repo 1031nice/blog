@@ -5,7 +5,7 @@ export interface Post {
   id: string
   title: string
   date: string
-  excerpt: string
+  excerpt?: string
   content: string
   tags?: string[]
   updatedAt?: string
@@ -88,7 +88,7 @@ function parseMarkdownFile(filePath: string): Post | null {
       id: frontmatter.id || '',
       title: frontmatter.title || '',
       date: frontmatter.date || '',
-      excerpt: frontmatter.excerpt || '',
+      excerpt: frontmatter.excerpt || undefined,
       content: body.trim(),
       tags: Array.isArray(frontmatter.tags) ? frontmatter.tags : (frontmatter.tags ? [frontmatter.tags] : []),
       updatedAt: frontmatter.updatedAt
@@ -108,13 +108,16 @@ function postToMarkdown(post: Post): string {
   const updatedAtYaml = post.updatedAt
     ? `updatedAt: "${post.updatedAt}"`
     : ''
+  
+  const excerptYaml = post.excerpt
+    ? `excerpt: "${post.excerpt}"`
+    : ''
 
   return `---
 id: "${post.id}"
 title: "${post.title}"
 date: "${post.date}"
-excerpt: "${post.excerpt}"
-${tagsYaml}${updatedAtYaml ? `\n${updatedAtYaml}` : ''}
+${excerptYaml ? `${excerptYaml}\n` : ''}${tagsYaml}${updatedAtYaml ? `\n${updatedAtYaml}` : ''}
 ---
 
 ${post.content}`

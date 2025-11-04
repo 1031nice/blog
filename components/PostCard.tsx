@@ -22,9 +22,11 @@ export default function PostCard({ post }: PostCardProps) {
           minute: '2-digit'
         })}
       </p>
-      <p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-2">
-        {post.excerpt}
-      </p>
+      {post.excerpt && (
+        <p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-2">
+          {post.excerpt}
+        </p>
+      )}
       {post.tags && post.tags.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {post.tags.map((tag) => (

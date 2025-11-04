@@ -20,9 +20,9 @@ export async function PUT(
     }
 
     // 유효성 검사
-    if (!title || !excerpt || !content) {
+    if (!title || !content) {
       return NextResponse.json(
-        { error: '제목, 요약, 내용은 필수입니다.' },
+        { error: '제목, 내용은 필수입니다.' },
         { status: 400 }
       )
     }
@@ -30,7 +30,7 @@ export async function PUT(
     // 포스트 업데이트
     updatePost(id, {
       title: title.trim(),
-      excerpt: excerpt.trim(),
+      excerpt: excerpt ? excerpt.trim() : undefined,
       content: content.trim(),
       tags: tags && Array.isArray(tags) ? tags : [],
     })
