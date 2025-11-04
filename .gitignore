@@ -35,6 +35,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# commit guide (internal use only)
-COMMIT_GUIDE.md
+# local guides and personal notes (not for GitHub)
+/local/
 
