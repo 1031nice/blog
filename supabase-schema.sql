@@ -43,6 +43,9 @@ CREATE POLICY "Allow public insert access on posts" ON posts
 CREATE POLICY "Allow public update access on posts" ON posts
   FOR UPDATE USING (true);
 
+CREATE POLICY "Allow public insert access on about" ON about
+  FOR INSERT WITH CHECK (true);
+
 CREATE POLICY "Allow public update access on about" ON about
   FOR UPDATE USING (true);
 
