@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import { checkAuth } from '../auth/route'
 
 const DEFAULT_CONTENT = `안녕하세요! 이 블로그에 오신 것을 환영합니다.
 여기서는 개발, 기술, 그리고 일상의 생각들을 공유합니다.
@@ -39,6 +40,14 @@ export async function GET() {
 // PUT: About 내용 업데이트
 export async function PUT(request: NextRequest) {
   try {
+    // 인증 확인
+    if (!checkAuth(request)) {
+      return NextResponse.json(
+        { error: '인증이 필요합니다.' },
+        { status: 401 }
+      )
+    }
+
     const body = await request.json()
     const { content } = body
 

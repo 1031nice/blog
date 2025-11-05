@@ -35,11 +35,16 @@ export default function AboutForm() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // 쿠키 포함
         body: JSON.stringify({ content }),
       })
 
       if (!response.ok) {
-        throw new Error('About 내용 업데이트에 실패했습니다.')
+        if (response.status === 401) {
+          throw new Error('인증이 필요합니다. 페이지를 새로고침하고 다시 로그인해주세요.')
+        }
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || 'About 내용 업데이트에 실패했습니다.')
       }
 
       // 완전 새로고침하여 최신 데이터 로드

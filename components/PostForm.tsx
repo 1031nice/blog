@@ -53,6 +53,7 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // 쿠키 포함
         body: JSON.stringify({
           title: formData.title,
           excerpt: formData.excerpt,
@@ -62,7 +63,11 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
       })
 
       if (!response.ok) {
-        throw new Error(isEditMode ? '포스트 수정에 실패했습니다.' : '포스트 저장에 실패했습니다.')
+        if (response.status === 401) {
+          throw new Error('인증이 필요합니다. 페이지를 새로고침하고 다시 로그인해주세요.')
+        }
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || (isEditMode ? '포스트 수정에 실패했습니다.' : '포스트 저장에 실패했습니다.'))
       }
 
       const data = await response.json()

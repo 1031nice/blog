@@ -1,11 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { updatePost, getPostById } from '@/lib/posts'
+import { checkAuth } from '../../auth/route'
 
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    // 인증 확인
+    if (!checkAuth(request)) {
+      return NextResponse.json(
+        { error: '인증이 필요합니다.' },
+        { status: 401 }
+      )
+    }
+
     const id = params.id
     const body = await request.json()
     const { title, excerpt, content, tags } = body
