@@ -36,21 +36,19 @@ function dbPostToPost(dbPost: DatabasePost): Post {
 
 export async function getAllPosts(): Promise<Post[]> {
   try {
-    console.log('[getAllPosts] Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Missing')
     const { data, error } = await supabase
       .from('posts')
       .select('*')
       .order('date', { ascending: false })
 
     if (error) {
-      console.error('[getAllPosts] 포스트 읽기 오류:', error)
+      console.error('포스트 읽기 오류:', error)
       return []
     }
 
-    console.log('[getAllPosts] 포스트 개수:', data?.length || 0)
     return (data || []).map(dbPostToPost)
   } catch (error) {
-    console.error('[getAllPosts] 포스트 읽기 오류:', error)
+    console.error('포스트 읽기 오류:', error)
     return []
   }
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { updatePost, getPostById } from '@/lib/posts'
-import { checkAuth } from '../../auth/route'
+import { checkAuth } from '@/lib/auth'
 
 export async function PUT(
   request: NextRequest,

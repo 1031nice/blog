@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
-import { checkAuth } from '../auth/route'
+import { checkAuth } from '@/lib/auth'
 
 const DEFAULT_CONTENT = `안녕하세요! 이 블로그에 오신 것을 환영합니다.
 여기서는 개발, 기술, 그리고 일상의 생각들을 공유합니다.

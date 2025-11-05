@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-// 인증 확인 헬퍼 함수
-export function checkAuth(request: NextRequest): boolean {
-  const authenticated = request.cookies.get('authenticated')?.value === 'true'
-  return authenticated
-}
+import { checkAuth } from '@/lib/auth'
 
 // 로그인 (비밀번호 확인 및 쿠키 설정)
 export async function POST(request: NextRequest) {
