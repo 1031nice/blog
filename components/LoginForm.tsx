@@ -40,8 +40,8 @@ export default function LoginForm() {
 
   return (
     <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold mb-6 text-center">관리자 로그인</h1>
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8 border border-gray-200 dark:border-gray-800">
+        <h1 className="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-gray-100">관리자 로그인</h1>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
@@ -51,7 +51,7 @@ export default function LoginForm() {
           )}
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium mb-2">
+            <label htmlFor="password" className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">
               비밀번호
             </label>
             <input
@@ -60,7 +60,7 @@ export default function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:border-green-600 transition-colors"
               placeholder="비밀번호를 입력하세요"
               autoFocus
             />
@@ -69,7 +69,7 @@ export default function LoginForm() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            className="w-full px-6 py-2 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
           >
             {isSubmitting ? '로그인 중...' : '로그인'}
           </button>

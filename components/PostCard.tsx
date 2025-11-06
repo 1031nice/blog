@@ -7,9 +7,9 @@ interface PostCardProps {
 
 export default function PostCard({ post }: PostCardProps) {
   return (
-    <article className="border border-gray-200 dark:border-gray-800 rounded-lg p-6 hover:shadow-lg transition-shadow">
+    <article className="border border-gray-200 dark:border-gray-800 rounded-lg p-6 bg-white dark:bg-gray-900/50 hover:shadow-lg hover:border-green-500/50 dark:hover:border-green-600/50 transition-all">
       <Link href={`/posts/${post.id}`}>
-        <h2 className="text-2xl font-bold mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+        <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100 hover:text-green-600 dark:hover:text-green-400 transition-colors">
           {post.title}
         </h2>
       </Link>
@@ -33,7 +33,7 @@ export default function PostCard({ post }: PostCardProps) {
             <Link
               key={tag}
               href={`/posts?tag=${encodeURIComponent(tag)}`}
-              className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 text-xs rounded transition-colors cursor-pointer"
+              className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-green-100 dark:hover:bg-green-900/30 hover:text-green-700 dark:hover:text-green-400 text-xs rounded transition-colors cursor-pointer"
             >
               {tag}
             </Link>
@@ -42,7 +42,7 @@ export default function PostCard({ post }: PostCardProps) {
       )}
       <Link
         href={`/posts/${post.id}`}
-        className="inline-block mt-4 text-blue-600 dark:text-blue-400 hover:underline"
+        className="inline-block mt-4 text-green-600 dark:text-green-400 hover:underline font-medium"
       >
         Read more →
       </Link>

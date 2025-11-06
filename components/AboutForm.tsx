@@ -73,7 +73,7 @@ export default function AboutForm() {
       )}
 
       <div>
-        <label htmlFor="content" className="block text-sm font-medium mb-2">
+        <label htmlFor="content" className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">
           내용 <span className="text-red-500">*</span>
         </label>
         <textarea
@@ -82,7 +82,7 @@ export default function AboutForm() {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows={15}
-          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 resize-none"
+          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:border-green-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 resize-none transition-colors"
           placeholder="About 페이지에 표시할 내용을 입력하세요."
           required
         />
@@ -95,14 +95,14 @@ export default function AboutForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+          className="px-6 py-3 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {isSubmitting ? '저장 중...' : '저장'}
         </button>
         <button
           type="button"
           onClick={() => router.push('/about')}
-          className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          className="px-6 py-3 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
         >
           취소
         </button>

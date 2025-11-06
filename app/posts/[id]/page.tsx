@@ -22,14 +22,14 @@ export default async function PostPage({ params }: PostPageProps) {
     <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <Link 
         href="/posts"
-        className="inline-block mb-6 text-blue-600 dark:text-blue-400 hover:underline"
+        className="inline-block mb-6 text-green-600 dark:text-green-400 hover:underline"
       >
         ← Back to Posts
       </Link>
       
       <header className="mb-8 relative">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-          <h1 className="text-4xl font-bold flex-1">{post.title}</h1>
+          <h1 className="text-4xl font-bold flex-1 text-gray-900 dark:text-gray-100">{post.title}</h1>
           <div className="flex items-center gap-2 flex-shrink-0">
             <Link
               href={`/posts/${post.id}/edit`}
@@ -68,7 +68,7 @@ export default async function PostPage({ params }: PostPageProps) {
               <Link
                 key={tag}
                 href={`/posts?tag=${encodeURIComponent(tag)}`}
-                className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 text-sm rounded transition-colors cursor-pointer"
+                className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-green-100 dark:hover:bg-green-900/30 hover:text-green-700 dark:hover:text-green-400 text-sm rounded transition-colors cursor-pointer"
               >
                 {tag}
               </Link>

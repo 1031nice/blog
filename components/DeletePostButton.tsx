@@ -67,7 +67,7 @@ export default function DeletePostButton({ postId, postTitle }: DeletePostButton
           onClick={handleCancel}
         >
           <div 
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6"
+            className="bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-md w-full p-6 border border-gray-200 dark:border-gray-800"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
@@ -89,14 +89,14 @@ export default function DeletePostButton({ postId, postTitle }: DeletePostButton
               <button
                 onClick={handleCancel}
                 disabled={isDeleting}
-                className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 취소
               </button>
               <button
                 onClick={handleConfirmDelete}
                 disabled={isDeleting}
-                className="px-4 py-2 text-sm text-white bg-gray-900 dark:bg-gray-700 rounded-md hover:bg-gray-800 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-4 py-2 text-sm text-white bg-red-600 dark:bg-red-700 rounded-md hover:bg-red-700 dark:hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {isDeleting ? '삭제 중...' : '삭제'}
               </button>

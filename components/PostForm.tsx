@@ -99,7 +99,7 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
       )}
 
       <div>
-        <label htmlFor="title" className="block text-sm font-medium mb-2">
+        <label htmlFor="title" className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">
           제목 <span className="text-red-500">*</span>
         </label>
         <input
@@ -109,13 +109,13 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
           required
           value={formData.title}
           onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:border-green-600 transition-colors"
           placeholder="포스트 제목을 입력하세요"
         />
       </div>
 
       <div>
-        <label htmlFor="excerpt" className="block text-sm font-medium mb-2">
+        <label htmlFor="excerpt" className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">
           요약
         </label>
         <textarea
@@ -124,13 +124,13 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
           value={formData.excerpt}
           onChange={handleChange}
           rows={3}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:border-green-600 transition-colors"
           placeholder="포스트 요약을 입력하세요 (선택사항)"
         />
       </div>
 
       <div>
-        <label htmlFor="content" className="block text-sm font-medium mb-2">
+        <label htmlFor="content" className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">
           내용 <span className="text-red-500">*</span>
         </label>
         <textarea
@@ -140,13 +140,13 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
           value={formData.content}
           onChange={handleChange}
           rows={15}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:border-green-600 font-mono text-sm transition-colors"
           placeholder="포스트 내용을 입력하세요 (마크다운 형식 가능)"
         />
       </div>
 
       <div>
-        <label htmlFor="tags" className="block text-sm font-medium mb-2">
+        <label htmlFor="tags" className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">
           태그
         </label>
         <input
@@ -155,7 +155,7 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
           name="tags"
           value={formData.tags}
           onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:border-green-600 transition-colors"
           placeholder="태그를 쉼표로 구분하세요 (예: Next.js, React, Web Development)"
         />
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -167,14 +167,14 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+          className="px-6 py-2 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
         >
           {isSubmitting ? (isEditMode ? '수정 중...' : '저장 중...') : (isEditMode ? '포스트 수정' : '포스트 저장')}
         </button>
         <button
           type="button"
           onClick={() => router.back()}
-          className="px-6 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          className="px-6 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
         >
           취소
         </button>
