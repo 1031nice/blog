@@ -1,6 +1,7 @@
 import { getPostById } from '@/lib/posts'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import DeletePostButton from '@/components/DeletePostButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -26,15 +27,18 @@ export default async function PostPage({ params }: PostPageProps) {
         ← Back to Posts
       </Link>
       
-      <header className="mb-8">
-        <div className="flex items-start justify-between mb-4">
-          <h1 className="text-4xl font-bold">{post.title}</h1>
-          <Link
-            href={`/posts/${post.id}/edit`}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-          >
-            수정
-          </Link>
+      <header className="mb-8 relative">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+          <h1 className="text-4xl font-bold flex-1">{post.title}</h1>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Link
+              href={`/posts/${post.id}/edit`}
+              className="px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
+              수정
+            </Link>
+            <DeletePostButton postId={post.id} postTitle={post.title} />
+          </div>
         </div>
         <div className="text-gray-600 dark:text-gray-400 space-y-1">
           <p>

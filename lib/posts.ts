@@ -40,6 +40,7 @@ export async function getAllPosts(): Promise<Post[]> {
       .from('posts')
       .select('*')
       .order('date', { ascending: false })
+      .limit(1000)
 
     if (error) {
       console.error('포스트 읽기 오류:', error)
@@ -170,6 +171,29 @@ export async function updatePost(id: string, updatedPost: Partial<Post>): Promis
     }
   } catch (error) {
     console.error('포스트 수정 오류:', error)
+    throw error
+  }
+}
+
+export async function deletePost(id: string): Promise<void> {
+  try {
+    // 기존 포스트 확인
+    const existingPost = await getPostById(id)
+    if (!existingPost) {
+      throw new Error(`Post with id ${id} not found`)
+    }
+
+    const { error } = await supabase
+      .from('posts')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      console.error('포스트 삭제 오류:', error)
+      throw new Error(`Failed to delete post: ${error.message}`)
+    }
+  } catch (error) {
+    console.error('포스트 삭제 오류:', error)
     throw error
   }
 }

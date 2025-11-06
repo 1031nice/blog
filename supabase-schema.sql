@@ -35,13 +35,16 @@ CREATE POLICY "Allow public read access on posts" ON posts
 CREATE POLICY "Allow public read access on about" ON about
   FOR SELECT USING (true);
 
--- 모든 사용자가 쓰고 수정할 수 있도록 정책 추가 (개발용)
+-- 모든 사용자가 쓰고 수정, 삭제할 수 있도록 정책 추가 (개발용)
 -- 프로덕션에서는 인증된 사용자만 허용하도록 변경 필요
 CREATE POLICY "Allow public insert access on posts" ON posts
   FOR INSERT WITH CHECK (true);
 
 CREATE POLICY "Allow public update access on posts" ON posts
   FOR UPDATE USING (true);
+
+CREATE POLICY "Allow public delete access on posts" ON posts
+  FOR DELETE USING (true);
 
 CREATE POLICY "Allow public insert access on about" ON about
   FOR INSERT WITH CHECK (true);
