@@ -74,7 +74,7 @@ export default function DeletePostButton({ postId, postTitle }: DeletePostButton
               포스트 삭제
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              정말로 <span className="font-medium text-gray-900 dark:text-gray-100">"{postTitle}"</span> 포스트를 삭제하시겠습니까?
+              정말로 <span className="font-medium text-gray-900 dark:text-gray-100">{postTitle}</span> 포스트를 삭제하시겠습니까?
               <br />
               <span className="text-sm text-gray-500 dark:text-gray-500">이 작업은 되돌릴 수 없습니다.</span>
             </p>

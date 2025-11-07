@@ -34,24 +34,55 @@ function dbPostToPost(dbPost: DatabasePost): Post {
   }
 }
 
-export async function getAllPosts(): Promise<Post[]> {
+// 페이징 정보를 포함한 결과 타입
+export interface PaginatedPosts {
+  posts: Post[]
+  total: number
+  totalPages: number
+}
+
+export async function getAllPosts(page: number = 1, pageSize: number = 5): Promise<PaginatedPosts> {
   try {
+    const from = (page - 1) * pageSize
+    const to = from + pageSize - 1
+
+    // 포스트 개수 조회
+    const { count, error: countError } = await supabase
+      .from('posts')
+      .select('*', { count: 'exact', head: true })
+
+    if (countError) {
+      console.error('포스트 개수 조회 오류:', countError)
+    }
+
+    // 페이징된 포스트 조회
     const { data, error } = await supabase
       .from('posts')
       .select('*')
       .order('date', { ascending: false })
-      .limit(1000)
+      .order('created_at', { ascending: false })
+      .range(from, to)
 
     if (error) {
       console.error('포스트 읽기 오류:', error)
-      return []
+      return { posts: [], total: 0, totalPages: 0 }
     }
 
-    return (data || []).map(dbPostToPost)
+    const total = count || 0
+    const totalPages = Math.ceil(total / pageSize)
+    const posts = (data || []).map(dbPostToPost)
+
+    return { posts, total, totalPages }
   } catch (error) {
     console.error('포스트 읽기 오류:', error)
-    return []
+    return { posts: [], total: 0, totalPages: 0 }
   }
+}
+
+// 호환성을 위한 함수 (홈 화면 등에서 사용)
+export async function getAllPostsSimple(): Promise<Post[]> {
+  const result = await getAllPosts(1, 1000)
+  return result.posts
 }
 
 export async function getPostById(id: string): Promise<Post | undefined> {
