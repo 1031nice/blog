@@ -12,6 +12,7 @@ interface PostFormProps {
 export default function PostForm({ postId, initialData }: PostFormProps) {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isGeneratingExcerpt, setIsGeneratingExcerpt] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const isEditMode = !!postId
   
@@ -90,6 +91,45 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
     }))
   }
 
+  const handleGenerateExcerpt = async () => {
+    // 제목과 본문이 없으면 요약 생성 불가
+    if (!formData.title.trim() || !formData.content.trim()) {
+      setError('제목과 본문을 먼저 입력해주세요.')
+      return
+    }
+
+    setIsGeneratingExcerpt(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/generate-excerpt', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: formData.title,
+          content: formData.content,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || '요약 생성에 실패했습니다.')
+      }
+
+      const data = await response.json()
+      setFormData(prev => ({
+        ...prev,
+        excerpt: data.excerpt,
+      }))
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '요약 생성 중 오류가 발생했습니다.')
+    } finally {
+      setIsGeneratingExcerpt(false)
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
@@ -115,9 +155,35 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
       </div>
 
       <div>
-        <label htmlFor="excerpt" className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">
-          요약
-        </label>
+        <div className="flex items-center justify-between mb-2">
+          <label htmlFor="excerpt" className="block text-sm font-medium text-gray-900 dark:text-gray-100">
+            요약
+          </label>
+          <button
+            type="button"
+            onClick={handleGenerateExcerpt}
+            disabled={isGeneratingExcerpt || !formData.title.trim() || !formData.content.trim()}
+            className="px-4 py-1.5 text-sm font-medium bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-700 dark:to-blue-700 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 dark:hover:from-purple-600 dark:hover:to-blue-600 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md disabled:shadow-none flex items-center gap-2"
+            title={!formData.title.trim() || !formData.content.trim() ? '제목과 본문을 먼저 입력해주세요' : 'AI로 요약 자동 생성'}
+          >
+            {isGeneratingExcerpt ? (
+              <>
+                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>생성 중...</span>
+              </>
+            ) : (
+              <>
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span>AI로 생성</span>
+              </>
+            )}
+          </button>
+        </div>
         <textarea
           id="excerpt"
           name="excerpt"
@@ -125,8 +191,16 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
           onChange={handleChange}
           rows={3}
           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:border-green-600 transition-colors"
-          placeholder="포스트 요약을 입력하세요 (선택사항)"
+          placeholder="포스트 요약을 입력하세요 (선택사항) 또는 'AI로 생성' 버튼을 클릭하여 자동 생성"
         />
+        {formData.excerpt && (
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+            <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            요약이 생성되었습니다. 필요시 수정하세요.
+          </p>
+        )}
       </div>
 
       <div>
