@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import DeletePostButton from '@/components/DeletePostButton'
 import TableOfContents from '@/components/TableOfContents'
+import ScrollToTop from '@/components/ScrollToTop'
 import { extractHeadings, generateId } from '@/lib/toc'
 
 export const dynamic = 'force-dynamic'
@@ -232,6 +233,7 @@ export default async function PostPage({ params }: PostPageProps) {
           </article>
         </div>
       </div>
+      <ScrollToTop />
     </div>
   )
 }

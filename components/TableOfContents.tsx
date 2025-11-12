@@ -56,12 +56,14 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
     e.preventDefault()
     const element = document.getElementById(id)
     if (element) {
+      // 헤더 높이(64px) + 여유 공간(16px) = 80px
+      // 제목에 scroll-mt-20 (80px)이 적용되어 있으므로 정확히 맞춤
       const offset = 80
-      const elementPosition = element.getBoundingClientRect().top
-      const offsetPosition = elementPosition + window.pageYOffset - offset
+      const elementTop = element.getBoundingClientRect().top + window.pageYOffset
+      const offsetPosition = elementTop - offset
 
       window.scrollTo({
-        top: offsetPosition,
+        top: Math.max(0, offsetPosition),
         behavior: 'smooth'
       })
     }
@@ -79,7 +81,6 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
             href={`#${item.id}`}
             onClick={(e) => {
               handleClick(e, item.id)
-              setIsMobileOpen(false)
             }}
             className={`
               block py-1 transition-colors
