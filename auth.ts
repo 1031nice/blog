@@ -58,6 +58,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.AUTH_SECRET,
   pages: {
     signIn: '/login',
+    error: '/api/auth/error',
   },
   callbacks: {
     // GitHub OAuth 로그인 시 특정 username만 허용
