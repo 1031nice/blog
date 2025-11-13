@@ -60,6 +60,34 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: '/login',
   },
   callbacks: {
+    // GitHub OAuth 로그인 시 특정 username만 허용
+    async signIn({ user, account, profile }) {
+      // GitHub OAuth로 로그인한 경우만 체크
+      if (account?.provider === 'github') {
+        // 허용된 GitHub username (환경 변수 필수)
+        const allowedUsername = process.env.ALLOWED_GITHUB_USERNAME
+        
+        if (!allowedUsername) {
+          console.error('ALLOWED_GITHUB_USERNAME environment variable is not set.')
+          return false
+        }
+        
+        // GitHub username 확인 (profile?.login 또는 profile?.username)
+        const githubUsername = (profile as any)?.login || (profile as any)?.username
+        
+        if (githubUsername && githubUsername === allowedUsername) {
+          return true // 허용된 사용자
+        }
+        
+        // 허용되지 않은 사용자
+        console.log(`Access denied for GitHub username: ${githubUsername}. Only '${allowedUsername}' is allowed.`)
+        return false
+      }
+      
+      // Credentials provider (개발 환경)는 항상 허용
+      return true
+    },
+    
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user
       const isOnAdminPage = nextUrl.pathname.startsWith('/posts/new') || 
