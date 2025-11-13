@@ -47,22 +47,9 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// 인증 상태 확인
+// 인증 상태 확인 (NextAuth 세션 사용)
 export async function GET(request: NextRequest) {
-  const authenticated = checkAuth(request)
+  const authenticated = await checkAuth(request)
   return NextResponse.json({ authenticated }, { status: 200 })
-}
-
-// 로그아웃
-export async function DELETE(request: NextRequest) {
-  const response = NextResponse.json(
-    { success: true, message: '로그아웃되었습니다.' },
-    { status: 200 }
-  )
-
-  // 쿠키 삭제
-  response.cookies.delete('authenticated')
-
-  return response
 }
 

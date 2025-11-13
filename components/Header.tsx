@@ -1,9 +1,12 @@
 'use client'
 
 import Link from 'next/link'
+import { useSession, signOut } from 'next-auth/react'
 import ThemeToggle from './ThemeToggle'
 
 export default function Header() {
+  const { data: session } = useSession()
+
   return (
     <header className="border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -30,12 +33,22 @@ export default function Header() {
             >
               About
             </Link>
-            <Link 
-              href="/posts/new" 
-              className="px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors text-sm"
-            >
-              글쓰기
-            </Link>
+            {session?.user && (
+              <Link 
+                href="/posts/new" 
+                className="px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors text-sm"
+              >
+                글쓰기
+              </Link>
+            )}
+            {session?.user && (
+              <button
+                onClick={() => signOut({ callbackUrl: '/' })}
+                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors text-sm"
+              >
+                로그아웃
+              </button>
+            )}
             <ThemeToggle />
           </nav>
         </div>

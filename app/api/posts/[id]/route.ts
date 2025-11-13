@@ -12,7 +12,7 @@ export async function PUT(
     const id = resolvedParams.id
 
     // 인증 확인
-    if (!checkAuth(request)) {
+    if (!(await checkAuth(request))) {
       return NextResponse.json(
         { error: '인증이 필요합니다.' },
         { status: 401 }
@@ -69,7 +69,7 @@ export async function DELETE(
     const id = resolvedParams.id
 
     // 인증 확인
-    if (!checkAuth(request)) {
+    if (!(await checkAuth(request))) {
       return NextResponse.json(
         { error: '인증이 필요합니다.' },
         { status: 401 }

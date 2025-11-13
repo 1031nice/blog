@@ -5,7 +5,7 @@ import { checkAuth } from '@/lib/auth'
 export async function POST(request: NextRequest) {
   try {
     // 인증 확인
-    if (!checkAuth(request)) {
+    if (!(await checkAuth(request))) {
       return NextResponse.json(
         { error: '인증이 필요합니다.' },
         { status: 401 }

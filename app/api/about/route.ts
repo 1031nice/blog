@@ -41,7 +41,7 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   try {
     // 인증 확인
-    if (!checkAuth(request)) {
+    if (!(await checkAuth(request))) {
       return NextResponse.json(
         { error: '인증이 필요합니다.' },
         { status: 401 }

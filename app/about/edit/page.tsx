@@ -1,15 +1,14 @@
-import { cookies } from 'next/headers'
+import { auth } from '@/auth'
+import { redirect } from 'next/navigation'
 import AboutForm from '@/components/AboutForm'
-import LoginForm from '@/components/LoginForm'
 
 export const dynamic = 'force-dynamic'
 
 export default async function EditAboutPage() {
-  const cookieStore = await cookies()
-  const authenticated = cookieStore.get('authenticated')?.value === 'true'
+  const session = await auth()
 
-  if (!authenticated) {
-    return <LoginForm />
+  if (!session?.user) {
+    redirect('/login')
   }
 
   return (

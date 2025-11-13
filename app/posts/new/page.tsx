@@ -1,13 +1,12 @@
-import { cookies } from 'next/headers'
+import { auth } from '@/auth'
+import { redirect } from 'next/navigation'
 import PostForm from '@/components/PostForm'
-import LoginForm from '@/components/LoginForm'
 
 export default async function NewPostPage() {
-  const cookieStore = await cookies()
-  const authenticated = cookieStore.get('authenticated')?.value === 'true'
+  const session = await auth()
 
-  if (!authenticated) {
-    return <LoginForm />
+  if (!session?.user) {
+    redirect('/login')
   }
 
   return (
