@@ -13,18 +13,18 @@ function ErrorContent() {
 
   if (error === 'AccessDenied') {
     errorMessage = '접근 권한이 없습니다'
-    errorDescription = '이 계정은 관리자 권한이 없습니다. 관리자에게 문의하세요.'
+    errorDescription = '이 계정은 관리자 권한이 없습니다.'
   } else if (error === 'Configuration') {
     errorMessage = '서버 설정 오류'
-    errorDescription = '인증 설정에 문제가 있습니다. 관리자에게 문의하세요.'
+    errorDescription = '인증 설정에 문제가 있습니다.'
   } else if (error === 'Verification') {
     errorMessage = '인증 실패'
-    errorDescription = '인증 과정에서 오류가 발생했습니다. 다시 시도해주세요.'
+    errorDescription = '인증 과정에서 오류가 발생했습니다.'
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-950 px-4">
-      <div className="max-w-md w-full bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8 border border-gray-200 dark:border-gray-800">
+    <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8 border border-gray-200 dark:border-gray-800">
         <div className="text-center mb-6">
           <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/20 mb-4">
             <svg
@@ -41,28 +41,20 @@ function ErrorContent() {
               />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             {errorMessage}
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
             {errorDescription}
           </p>
         </div>
 
-        <div className="space-y-3">
-          <Link
-            href="/"
-            className="block w-full px-4 py-2 bg-gray-900 dark:bg-gray-800 text-white text-center rounded-lg hover:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
-          >
-            홈으로 돌아가기
-          </Link>
-          <Link
-            href="/login"
-            className="block w-full px-4 py-2 bg-green-600 dark:bg-green-700 text-white text-center rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors"
-          >
-            다시 로그인하기
-          </Link>
-        </div>
+        <Link
+          href="/"
+          className="block w-full px-6 py-2 bg-green-600 dark:bg-green-700 text-white text-center rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors"
+        >
+          홈으로 돌아가기
+        </Link>
       </div>
     </div>
   )
@@ -71,8 +63,8 @@ function ErrorContent() {
 export default function AuthErrorPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-950 px-4">
-        <div className="max-w-md w-full bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8 border border-gray-200 dark:border-gray-800">
+      <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8 border border-gray-200 dark:border-gray-800">
           <div className="text-center">
             <div className="animate-pulse">
               <div className="h-12 w-12 mx-auto bg-gray-200 dark:bg-gray-700 rounded-full mb-4"></div>
