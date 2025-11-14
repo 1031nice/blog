@@ -40,12 +40,6 @@ export default function PostCard({ post }: PostCardProps) {
           ))}
         </div>
       )}
-      <Link
-        href={`/posts/${post.id}`}
-        className="inline-block mt-4 text-green-600 dark:text-green-400 hover:underline font-medium"
-      >
-        Read more →
-      </Link>
     </article>
   )
 }
