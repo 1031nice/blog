@@ -232,6 +232,10 @@ export default async function PostPage({ params }: PostPageProps) {
             </div>
           </article>
         </div>
+        
+        {hasToc && (
+          <div className="hidden lg:block w-56 flex-shrink-0"></div>
+        )}
       </div>
       <ScrollToTop />
     </div>
