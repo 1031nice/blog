@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
 interface DeletePostButtonProps {
   postId: string
@@ -10,11 +11,17 @@ interface DeletePostButtonProps {
 
 export default function DeletePostButton({ postId, postTitle }: DeletePostButtonProps) {
   const router = useRouter()
+  const { data: session } = useSession()
   const [showModal, setShowModal] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const handleDeleteClick = () => {
+    // 인증 확인: 세션이 없으면 로그인 페이지로 리다이렉트
+    if (!session?.user) {
+      router.push('/login')
+      return
+    }
     setShowModal(true)
     setError(null)
   }

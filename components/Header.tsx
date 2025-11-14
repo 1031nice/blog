@@ -33,14 +33,12 @@ export default function Header() {
             >
               About
             </Link>
-            {session?.user && (
-              <Link 
-                href="/posts/new" 
-                className="px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors text-sm"
-              >
-                글쓰기
-              </Link>
-            )}
+            <Link 
+              href="/posts/new" 
+              className="px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors text-sm"
+            >
+              글쓰기
+            </Link>
             {session?.user && (
               <button
                 onClick={() => signOut({ callbackUrl: '/' })}
